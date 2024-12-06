@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { sidebarLinks } from '@/constants' // Doğru yoldan import edildiğinden emin olun.
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
+import Footer from './Footer'
 
 
 const Sidebar = ({ user }: SiderbarProps) => {
@@ -68,7 +69,7 @@ const Sidebar = ({ user }: SiderbarProps) => {
 
                 USER
             </nav>
-                FOOTER
+                <Footer user={user} type={'mobile'}/>
         </section>
     )
 }
