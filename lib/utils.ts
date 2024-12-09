@@ -131,23 +131,30 @@ export function getAccountTypeColors(type: AccountTypes) {
 }
 
 export function countTransactionCategories(
-  transactions: Transaction[] = [] // Default to an empty array
+  transactions: Transaction[]
 ): CategoryCount[] {
   const categoryCounts: { [category: string]: number } = {};
   let totalCount = 0;
 
-  transactions.forEach((transaction) => {
-    const category = transaction.category;
+  // Iterate over each transaction
+  transactions &&
+    transactions.forEach((transaction) => {
+      // Extract the category from the transaction
+      const category = transaction.category;
 
-    if (categoryCounts.hasOwnProperty(category)) {
-      categoryCounts[category]++;
-    } else {
-      categoryCounts[category] = 1;
-    }
+      // If the category exists in the categoryCounts object, increment its count
+      if (categoryCounts.hasOwnProperty(category)) {
+        categoryCounts[category]++;
+      } else {
+        // Otherwise, initialize the count to 1
+        categoryCounts[category] = 1;
+      }
 
-    totalCount++;
-  });
+      // Increment total count
+      totalCount++;
+    });
 
+  // Convert the categoryCounts object to an array of objects
   const aggregatedCategories: CategoryCount[] = Object.keys(categoryCounts).map(
     (category) => ({
       name: category,
@@ -156,23 +163,28 @@ export function countTransactionCategories(
     })
   );
 
+  // Sort the aggregatedCategories array by count in descending order
   aggregatedCategories.sort((a, b) => b.count - a.count);
 
   return aggregatedCategories;
 }
 
 export function extractCustomerIdFromUrl(url: string) {
+  // Split the URL string by '/'
   const parts = url.split("/");
+
+  // Extract the last part, which represents the customer ID
   const customerId = parts[parts.length - 1];
+
   return customerId;
 }
 
 export function encryptId(id: string) {
-  return typeof window !== "undefined" ? btoa(id) : Buffer.from(id).toString('base64');
+  return btoa(id);
 }
 
 export function decryptId(id: string) {
-  return typeof window !== "undefined" ? atob(id) : Buffer.from(id, 'base64').toString('utf-8');
+  return atob(id);
 }
 
 export const getTransactionStatus = (date: Date) => {
@@ -183,17 +195,17 @@ export const getTransactionStatus = (date: Date) => {
   return date > twoDaysAgo ? "Processing" : "Success";
 };
 
-export const authFormSchema = (type:string) =>z.object({
-  //sign up
-  firstName: type ==='sign-in' ? z.string().optional(): z.string().min(3),
-  lastName:type ==='sign-in' ? z.string().optional():  z.string().min(3),
-  address1:type ==='sign-in' ? z.string().optional(): z.string().max(50),
-  city:type ==='sign-in' ? z.string().optional(): z.string().max(50),
-  state:type ==='sign-in' ? z.string().optional(): z.string().min(2).max(2),
-  postalCode:type ==='sign-in' ? z.string().optional(): z.string().min(3).max(6),
-  dateOfBirth:type ==='sign-in' ? z.string().optional(): z.string().min(3),
-  ssn:type ==='sign-in' ? z.string().optional(): z.string().min(3),
-  //sign in
+export const authFormSchema = (type: string) => z.object({
+  // sign up
+  firstName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+  lastName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+  address1: type === 'sign-in' ? z.string().optional() : z.string().max(50),
+  city: type === 'sign-in' ? z.string().optional() : z.string().max(50),
+  state: type === 'sign-in' ? z.string().optional() : z.string().min(2).max(2),
+  postalCode: type === 'sign-in' ? z.string().optional() : z.string().min(3).max(6),
+  dateOfBirth: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+  ssn: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+  // both
   email: z.string().email(),
   password: z.string().min(8),
 })

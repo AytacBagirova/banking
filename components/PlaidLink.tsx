@@ -12,9 +12,16 @@ const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
 
   useEffect(() => {
     const getLinkToken = async () => {
-      const data = await createLinkToken(user);
-
-      setToken(data?.linkToken);
+      try {
+        const data = await createLinkToken(user);
+        if (data?.linkToken) {
+          setToken(data.linkToken);
+        } else {
+          console.error('Link token alınamadı');
+        }
+      } catch (error) {
+        console.error('Token alma işlemi sırasında hata:', error);
+      }
     }
 
     getLinkToken();
